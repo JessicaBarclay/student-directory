@@ -2,7 +2,7 @@ def input_students
   puts "Please enter the names of the students"
   puts "To finish, just hit return twice"
     students = []
-    name = gets.chomp
+    name = gets.chomp.capitalize
   while !name.empty? do
     students << {name: name, cohort: :november}
     puts "Now we have #{students.count} students"
@@ -18,7 +18,7 @@ end
 
 def print(students)
   students.each_with_index do |student, index|
-    if student[:name][0] == "A"
+    if student[:name][0] == "A" && student[:name].length < 12
       puts "#{index + 1}. #{student[:name]} (#{student[:cohort]} cohort)"
     end
   end
