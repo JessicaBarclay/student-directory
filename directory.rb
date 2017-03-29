@@ -1,16 +1,17 @@
 def input_students
   students = []
-  puts "Please enter the names of the students".center(50)
-  puts "To finish, just hit return twice".center(50) ; name = gets.chomp.capitalize
-  puts "Any hobbies?".center(50) ; hobbies = gets.chomp.capitalize
-  puts "Country of birth?".center(50) ; country = gets.chomp.capitalize
-  puts "Height in cm?".center(50) ; height = gets.chomp
+  puts "Please enter the students information".center(50)
+  puts  "To finish, just hit return twice".center(50)
+  puts
+  puts "Students name?".center(50); name = gets.chomp.capitalize
     while !name.empty? do
-      students << {name: name, cohort: :november, hobbies: hobbies, country: country, height: height}
-      puts "Now we have #{students.count} students, add another?".center(50) ; name = gets.chomp
+      puts "Students cohort?".center(50) ; cohort = gets.chomp.capitalize
+      if cohort.empty? ; cohort = "April" end
       puts "Any hobbies?".center(50) ; hobbies = gets.chomp.capitalize
-      puts "Country of birth?".center(50) ; country = gets.chomp.capitalize
+      puts "Country of birth?".center(50) ; country = gets.chomp.upcase
       puts "Height in cm?".center(50) ; height = gets.chomp
+      students << {name: name, cohort: cohort, hobbies: hobbies, country: country, height: height}
+      puts "Now we have #{students.count} students, add another?".center(50) ; name = gets.chomp
     end
   students
 end
@@ -21,12 +22,12 @@ end
 def print(students)
   total = students.count
   i = 0
-    while total > 0
-    puts "Name: #{students[i][:name]}
-    Cohort: #{students[i][:cohort]}
-    Hobbies: #{students[i][:hobbies]}
-    Country: #{students[i][:country]}
-    Height: #{students[i][:height]}".center(50)
+  while total > 0
+    puts "Name: #{students[i][:name]} Cohort: #{students[i][:cohort]}"
+    puts "Hobbies: #{students[i][:hobbies]}"
+    puts "Country: #{students[i][:country]}"
+    puts "Height: #{students[i][:height]}"
+    puts "__________________________________________________"
     total -= 1
     i += 1
   end
