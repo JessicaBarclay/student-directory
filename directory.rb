@@ -1,6 +1,6 @@
 @students = []
 
-def print_menu
+def print_menu_options
   puts "1. Input the students"
   puts "2. Show the students"
   puts "3. Save the list to students.csv"
@@ -9,7 +9,7 @@ def print_menu
 end
 def interactive_menu
   loop do
-    print_menu
+    print_menu_options
     process(STDIN.gets.chomp)
   end
 end
@@ -29,7 +29,7 @@ def process(selection)
     puts "Try again"
   end
 end
-def store_info_in_array
+def data_list
   @students << {name: @name, cohort: @cohort}
 end
 def input_students
@@ -41,7 +41,7 @@ def input_students
       puts "Cohort?".center(50)
       @cohort = STDIN.gets.chop.capitalize.to_sym
       if @cohort.empty? ; @cohort = "Cohort tbc" end
-      store_info_in_array
+      data_list
       puts "Now we have #{@students.count} students".center(50)
       puts "Hit return or add another name:".center(50)
       @name = STDIN.gets.chop.to_sym
@@ -75,6 +75,8 @@ def print_footer
   end
 end
 def save_students
+  puts "Data saved".center(50)
+  puts
   file = File.open("students.csv", "w")
   @students.each do |student|
     student_data = [student[:name], student[:cohort]]
@@ -84,14 +86,16 @@ def save_students
   file.close
 end
 def load_students(filename = "students.csv")
+  puts "Data loaded, hit 2 to view".center(50)
+  puts
   file = File.open(filename, "r")
   file.readlines.each do |line|
   @name, @cohort = line.chomp.split(",")
-  store_info_in_array
+  data_list
   end
   file.close
 end
-def try_load_students
+def default_load_file
   filename = ARGV.first
   return if filename.nil?
   if File.exists?(filename)
@@ -103,5 +107,5 @@ def try_load_students
 end
 
 
-try_load_students
+default_load_file
 interactive_menu
