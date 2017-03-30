@@ -9,12 +9,13 @@ def input_students
       puts "Cohort?".center(50)
         cohort = gets.chop.capitalize.to_sym
           if cohort.empty? ; cohort = "Cohort tbc" end
-          puts "Country of birth?".center(50) ; country = gets.chop.to_sym
-          students << {name: name, cohort: cohort, country: country}
-          puts "Confirm name: '#{name}' by typing yes or no" ; typo = gets.chop.downcase
-          if typo == "no" ; puts "Students name?".center(50); name = gets.chop.capitalize.to_sym end
+            puts "Country of birth?".center(50) ; country = gets.chop.to_sym
+            students << {name: name, cohort: cohort, country: country}
+            puts "Will #{name} be attending the #{cohort} cohort?".center(50)
+            puts "Hit return to confirm or type no to change:".center(50) ; typo = gets.chop.downcase
+          if typo == "no" ; puts "Correct cohort?".center(50); cohort = gets.chop.capitalize.to_sym end
         puts "Now we have #{students.count} students".center(50)
-      puts "Hit return or add another name:".center(50) ; name = gets.chop.to_sym
+      puts "Hit return to finish or add another name:".center(50) ; name = gets.chop.to_sym
     end
   students
 end
