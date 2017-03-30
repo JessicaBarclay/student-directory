@@ -29,19 +29,22 @@ def process(selection)
     puts "Try again"
   end
 end
+def store_info_in_array
+  @students << {name: @name, cohort: @cohort}
+end
 def input_students
   puts ("_"*50)
   puts "Please enter the students information".center(50)
   puts  "To finish, just hit return twice".center(50)
-  name = STDIN.gets.chop.capitalize.to_sym
-    while !name.empty? do
+  @name = STDIN.gets.chop.capitalize.to_sym
+    while !@name.empty? do
       puts "Cohort?".center(50)
-      cohort = STDIN.gets.chop.capitalize.to_sym
-      if cohort.empty? ; cohort = "Cohort tbc" end
-      @students << {name: name, cohort: cohort}
+      @cohort = STDIN.gets.chop.capitalize.to_sym
+      if @cohort.empty? ; @cohort = "Cohort tbc" end
+      store_info_in_array
       puts "Now we have #{@students.count} students".center(50)
       puts "Hit return or add another name:".center(50)
-      name = STDIN.gets.chop.to_sym
+      @name = STDIN.gets.chop.to_sym
     end
 end
 def show_students
@@ -83,8 +86,8 @@ end
 def load_students(filename = "students.csv")
   file = File.open(filename, "r")
   file.readlines.each do |line|
-  name, cohort = line.chomp.split(",")
-    @students << {name: name, cohort: cohort}
+  @name, @cohort = line.chomp.split(",")
+  store_info_in_array
   end
   file.close
 end
@@ -98,6 +101,7 @@ def try_load_students
     puts "Sorry, #{filename} doesn't exist"
   end
 end
+
 
 try_load_students
 interactive_menu
