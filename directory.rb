@@ -3,10 +3,11 @@ def input_students
   puts ("_"*50)
   puts "Please enter the students information".center(50)
   puts  "To finish, just hit return twice".center(50)
-  puts
+  puts ("_"*50)
   puts "Students name?".center(50); name = gets.chop.capitalize.to_sym
     while !name.empty? do
-      puts "Students cohort?".center(50) ; cohort = gets.chop.capitalize.to_sym
+      puts "Cohort?".center(50)
+      cohort = gets.chop.capitalize.to_sym
       if cohort.empty? ; cohort = "N/A" end
       puts "Country of birth?".center(50) ; country = gets.chop.to_sym
       students << {name: name, cohort: cohort, country: country}
