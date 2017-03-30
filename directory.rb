@@ -11,7 +11,7 @@ def input_students
       if cohort.empty? ; cohort = "Cohort tbc" end
       @students << {name: name, cohort: cohort}
       puts "Now we have #{@students.count} students".center(50)
-      puts "Hit return to finish or add another name:".center(50)
+      puts "Hit return or add another name:".center(50)
       name = gets.chop.to_sym
     end
 end
@@ -24,6 +24,7 @@ end
 def print_menu
   puts "1. Input the students"
   puts "2. Show the students"
+  puts "3. Save the list to students.csv"
   puts "9. Exit"
 end
 def show_students
@@ -37,6 +38,8 @@ def process(selection)
     input_students
   when "2"
     show_students
+  when "3"
+    save_students
   when "9"
     exit
   else
@@ -73,6 +76,15 @@ def print_footer
     puts "Overall, we have #{@students.count} great students".center(50)
     puts ("_"*50)
   end
+end
+def save_students
+  file = File.open("students.csv", "w")
+  @students.each do |student|
+    student_data = [student[:name], student[:cohort]]
+    csv_line = student_data.join(",")
+    file.puts csv_line
+  end
+  file.close
 end
 
 interactive_menu
