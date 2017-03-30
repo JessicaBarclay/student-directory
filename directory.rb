@@ -1,26 +1,5 @@
 @students = []
 
-def input_students
-  puts ("_"*50)
-  puts "Please enter the students information".center(50)
-  puts  "To finish, just hit return twice".center(50)
-  name = gets.chop.capitalize.to_sym
-    while !name.empty? do
-      puts "Cohort?".center(50)
-      cohort = gets.chop.capitalize.to_sym
-      if cohort.empty? ; cohort = "Cohort tbc" end
-      @students << {name: name, cohort: cohort}
-      puts "Now we have #{@students.count} students".center(50)
-      puts "Hit return or add another name:".center(50)
-      name = gets.chop.to_sym
-    end
-end
-def interactive_menu
-  loop do
-    print_menu
-    process(gets.chomp)
-  end
-end
 def print_menu
   puts "1. Input the students"
   puts "2. Show the students"
@@ -28,10 +7,11 @@ def print_menu
   puts "4. Load the list from students.csv"
   puts "9. Exit"
 end
-def show_students
-  print_header
-  print_students_list
-  print_footer
+def interactive_menu
+  loop do
+    print_menu
+    process(STDIN.gets.chomp)
+  end
 end
 def process(selection)
   case selection
@@ -43,28 +23,39 @@ def process(selection)
     save_students
   when "4"
     load_students
-    show_students
   when "9"
     exit
   else
     puts "Try again"
   end
 end
+def input_students
+  puts ("_"*50)
+  puts "Please enter the students information".center(50)
+  puts  "To finish, just hit return twice".center(50)
+  name = STDIN.gets.chop.capitalize.to_sym
+    while !name.empty? do
+      puts "Cohort?".center(50)
+      cohort = STDIN.gets.chop.capitalize.to_sym
+      if cohort.empty? ; cohort = "Cohort tbc" end
+      @students << {name: name, cohort: cohort}
+      puts "Now we have #{@students.count} students".center(50)
+      puts "Hit return or add another name:".center(50)
+      name = STDIN.gets.chop.to_sym
+    end
+end
+def show_students
+  print_header
+  print_students_list
+  print_footer
+end
 def print_header
   puts "The Students of Villains Academy".center(50)
   puts ("_"*50)
 end
 def print_students_list
-  if @students.empty? || @students == nil
-    puts "No students on file\n".center(50)
-    else list_by_month = @students.group_by {|input| input[:cohort]}
-      puts "Students listed by cohort:".center(50)
-    list_by_month.map do |key, value|
-      puts "#{key}"
-      for index in 0..value.size-1 do
-      puts "#{index+1}. #{value[index][:name]}"
-    end
-    end
+  @students.each_with_index do |student, i|
+    puts "#{i + 1}.#{student[:name]}, #{student[:cohort]}"
   end
 end
 def print_footer
@@ -89,13 +80,24 @@ def save_students
   end
   file.close
 end
-def load_students
-  file = File.open("students.csv", "r")
+def load_students(filename = "students.csv")
+  file = File.open(filename, "r")
   file.readlines.each do |line|
   name, cohort = line.chomp.split(",")
     @students << {name: name, cohort: cohort}
   end
   file.close
 end
+def try_load_students
+  filename = ARGV.first
+  return if filename.nil?
+  if File.exists?(filename)
+    load_students(filename)
+    puts "Loaded #{@students.count} from #{filename}"
+  else
+    puts "Sorry, #{filename} doesn't exist"
+  end
+end
 
+try_load_students
 interactive_menu
