@@ -66,33 +66,42 @@ def save_to_file
   puts "Save file as:".center(50)
   file_name = STDIN.gets.chomp
   file = File.open(file_name, "w")
-  @students.each do |student|
-    student_data = [student[:name], student[:cohort]]
-    csv_line = student_data.join(",")
-    file.puts csv_line
-  end
+    @students.each do |student|
+      student_data = [student[:name], student[:cohort]]
+      csv_line = student_data.join(",")
+      file.puts csv_line
+    end
   file.close
 end
 def load_file
   puts "Load file:".center(50), ""
   file = File.open(STDIN.gets.chomp, "r")
-  file.readlines.each do |line|
-    @name, @cohort = line.chomp.split(",")
-    student_list_array
-  end
+    file.readlines.each do |line|
+      @name, @cohort = line.chomp.split(",")
+      student_list_array
+    end
   file.close
 end
 def load_students_default(filename="students.csv")
-  puts "","'students.csv' loaded by default".center(50), ""
+  puts "","'#{filename}' loaded by default".center(50), ""
   file = File.open(filename, "r")
-  file.readlines.each do |line|
-    @name, @cohort = line.chomp.split(",")
-    student_list_array
-  end
+    file.readlines.each do |line|
+      @name, @cohort = line.chomp.split(",")
+      student_list_array
+    end
   file.close
 end
 def load_on_startup
-  if ARGV.empty? ; load_students_default end
+  filename = ARGV.first
+  if filename.nil? || filename.empty? ; load_students_default
+  else puts "","'#{filename}' loaded".center(50), ""
+    file = File.open(filename, "r")
+      file.readlines.each do |line|
+        @name, @cohort = line.chomp.split(",")
+        student_list_array
+      end
+    file.close
+  end
 end
 
 interactive_menu
