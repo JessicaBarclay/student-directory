@@ -1,9 +1,8 @@
 @students = []
 
 def print_menu_options
-  puts "", "1. Input students", "2. List students"
-  puts "3. List by cohort", "4. Save file"
-  puts "5. Load file", "9. Exit"
+  puts "", "1. Input students", "2. List students" , "3. List by cohort"
+  puts "4. Save file" , "5. Load file", "9. Exit"
 end
 def interactive_menu
   load_on_startup
@@ -19,21 +18,21 @@ def process(selection)
   when "5" ; load_file ; when "9" ; exit
   else "Try again" end
 end
-def array_list
+def student_list_array
   @students << {name: @name, cohort: @cohort}
 end
 def input_students
-  puts "_"*50, "Please enter the students information".center(50)
+  puts "_"*50,"","Please enter the students information".center(50)
   puts  "To finish, just hit return twice".center(50)
   @name = STDIN.gets.chop.capitalize.to_sym
     while !@name.empty? do
       puts "Cohort?".center(50)
       @cohort = STDIN.gets.chop.capitalize.to_sym
       if @cohort.empty? ; @cohort = "Cohort tbc" end
-      array_list
+      student_list_array
       puts "Now we have #{@students.count} students".center(50)
       puts "Hit return or add another name:".center(50)
-      @name = STDIN.gets.chop.to_sym
+      @name = STDIN.gets.chop.capitalize.to_sym
     end
 end
 def show_students
@@ -49,10 +48,8 @@ def print_students_list
 end
 def print_footer
   if @students.count == 0 ; return
-  elsif @students.count == 1
-    puts "","We have a great student!".center(50), ""
-  else
-    puts "","We have #{@students.count} great students!".center(50), ""
+  elsif @students.count == 1 ; puts "We have a great student!".center(50)
+  else puts "We have #{@students.count} great students!".center(50)
   end
 end
 def print_by_cohort
@@ -76,21 +73,21 @@ def save_to_file
   end
   file.close
 end
+def load_file
+  puts "Load file:".center(50), ""
+  file = File.open(STDIN.gets.chomp, "r")
+  file.readlines.each do |line|
+    @name, @cohort = line.chomp.split(",")
+    student_list_array
+  end
+  file.close
+end
 def load_students_default(filename="students.csv")
   puts "","'students.csv' loaded by default".center(50), ""
   file = File.open(filename, "r")
   file.readlines.each do |line|
     @name, @cohort = line.chomp.split(",")
-    array_list
-  end
-  file.close
-end
-def load_file #(filename="students.csv")
-  puts "Open file:".center(50), ""
-  file = File.open(STDIN.gets.chomp, "r")
-  file.readlines.each do |line|
-    @name, @cohort = line.chomp.split(",")
-    array_list
+    student_list_array
   end
   file.close
 end
@@ -99,14 +96,3 @@ def load_on_startup
 end
 
 interactive_menu
-
-# def default_load_file
-#   filename = ARGV.first
-#   return if filename.nil?
-#   if File.exists?(filename)
-#     load_file(filename)
-#     puts "Loaded #{@students.count} from #{filename}"
-#   else
-#     puts "Sorry, #{filename} doesn't exist"
-#   end
-# end
