@@ -1,9 +1,9 @@
 @students = []
 
 def print_menu_options
-  puts "", "1. Input the students", "2. Show students"
+  puts "", "1. Input students", "2. List students"
   puts "3. List by cohort", "4. Save file"
-  puts "5. Load from students.csv", "9. Exit"
+  puts "5. Load file", "9. Exit"
 end
 def interactive_menu
   load_on_startup
@@ -16,7 +16,7 @@ def process(selection)
   case selection
   when "1" ; input_students ; when "2" ; show_students
   when "3" ; print_by_cohort ; when "4" ; save_to_file
-  when "5" ; load_students_file ; when "9" ; exit
+  when "5" ; load_file ; when "9" ; exit
   else "Try again" end
 end
 def array_list
@@ -67,7 +67,7 @@ def print_by_cohort
 end
 def save_to_file
   puts "Save file as:".center(50)
-  file_name = gets.chomp
+  file_name = STDIN.gets.chomp
   file = File.open(file_name, "w")
   @students.each do |student|
     student_data = [student[:name], student[:cohort]]
@@ -76,8 +76,8 @@ def save_to_file
   end
   file.close
 end
-def load_students_file(filename="students.csv")
-  puts "Data loaded, hit 2 to view".center(50), ""
+def load_students_default(filename="students.csv")
+  puts "","'students.csv' loaded by default".center(50), ""
   file = File.open(filename, "r")
   file.readlines.each do |line|
     @name, @cohort = line.chomp.split(",")
@@ -85,8 +85,17 @@ def load_students_file(filename="students.csv")
   end
   file.close
 end
+def load_file #(filename="students.csv")
+  puts "Open file:".center(50), ""
+  file = File.open(STDIN.gets.chomp, "r")
+  file.readlines.each do |line|
+    @name, @cohort = line.chomp.split(",")
+    array_list
+  end
+  file.close
+end
 def load_on_startup
-  if ARGV.empty? ; load_students_file end
+  if ARGV.empty? ; load_students_default end
 end
 
 interactive_menu
@@ -95,7 +104,7 @@ interactive_menu
 #   filename = ARGV.first
 #   return if filename.nil?
 #   if File.exists?(filename)
-#     load_students_file(filename)
+#     load_file(filename)
 #     puts "Loaded #{@students.count} from #{filename}"
 #   else
 #     puts "Sorry, #{filename} doesn't exist"
