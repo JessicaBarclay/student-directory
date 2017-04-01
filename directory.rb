@@ -1,11 +1,12 @@
+require "csv"
 @students = []
 
 def print_menu_options
   puts "", "1. Input students", "2. List students" , "3. List by cohort"
-  puts "4. Save file" , "5. Load file", "9. Exit"
+  puts "4. Save file" , "5. Load file", "6. Load default", "9. Exit"
 end
 def interactive_menu
-  load_startup_option
+  load_default_at_startup
   loop do
     print_menu_options
     process(STDIN.gets.chomp)
@@ -15,7 +16,7 @@ def process(selection)
   case selection
   when "1" ; input_students ; when "2" ; show_students
   when "3" ; print_by_cohort ; when "4" ; save_to_file
-  when "5" ; load_file ; when "9" ; exit
+  when "5" ; load_file ; when "6" ; load_default when "9" ; exit
   else "Try again" end
 end
 def student_list_array
@@ -65,11 +66,10 @@ end
 def save_to_file
   puts "Save file as:".center(50)
   filename = STDIN.gets.chomp
-  file = File.open(filename, "w") do |file|
+  CSV.open(filename, "w") do |csv|
     @students.each do |student|
       student_data = [student[:name], student[:cohort]]
-        csv_line = student_data.join(",")
-        file.puts csv_line
+        csv << student_data
       end
     end
   puts "Saved: #{filename}".center(50)
@@ -77,34 +77,36 @@ end
 def load_file
   puts "Load file:".center(50), ""
   filename = STDIN.gets.chomp
-  file = File.open(filename, "r") do |file|
-    file.readlines.each do |line|
-      @name, @cohort = line.chomp.split(",")
-      student_list_array
+    if File.exists?(filename)
+      CSV.foreach(filename, "r") do |line|
+        @name, @cohort = line[0], line[1]
+        student_list_array
+        end
+      else
+      "Sorry #{filename} doesn't exist".center(50)
     end
-  end
   puts "Loaded: #{filename}".center(50)
 end
 def load_default(filename="students.csv")
-  puts "","'#{filename}' loaded by default".center(50), ""
-  file = File.open(filename, "r") do |file|
-    file.readlines.each do |line|
-      @name, @cohort = line.chomp.split(",")
+  puts "","'#{filename}' loaded".center(50), ""
+  CSV.open(filename, "r") do |file|
+    CSV.foreach(filename, "r") do |line|
+      @name, @cohort = line[0], line[1]
       student_list_array
     end
   end
 end
-def load_startup_option
+def load_default_at_startup
   filename = ARGV.first
-  if filename.nil? || filename.empty? ; load_default
-  else puts "","'#{filename}' loaded".center(50), ""
-    file = File.open(filename, "r") do |file|
-      file.readlines.each do |line|
-        @name, @cohort = line.chomp.split(",")
-        student_list_array
-      end
-    end
+  load_default if filename.nil?
+end
+def try_load_students
+  filename = ARGV.first
+    return if filename.nil?
+    if File.exists?(filename) ; load_default(filename)
+    else puts "Sorry, #{filename} doesn't exist." ; exit
   end
 end
 
+try_load_students
 interactive_menu
