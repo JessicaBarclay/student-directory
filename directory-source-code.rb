@@ -1,9 +1,11 @@
+puts source_code = <<'HEREDOC'
+
 require "csv"
 @students = []
 
 def print_menu_options
   puts "", "1. Input students", "2. List students" , "3. List by cohort"
-  puts "4. Save file" , "5. Load file", "6. Load default", "9. Exit"
+  puts "4. Save file" , "5. Load file", "6. Load students.csv", "7. Exit"
 end
 def interactive_menu
   load_default_at_startup
@@ -16,7 +18,7 @@ def process(selection)
   case selection
   when "1" ; input_students ; when "2" ; show_students
   when "3" ; print_by_cohort ; when "4" ; save_to_file
-  when "5" ; load_file ; when "6" ; load_default when "9" ; exit
+  when "5" ; load_file ; when "6" ; load_default ; when "7" ; exit
   else "Try again" end
 end
 def student_list_array
@@ -27,14 +29,14 @@ def input_students
   puts  "To finish, just hit return twice".center(50)
   @name = STDIN.gets.chop.capitalize.to_sym
     while !@name.empty? do
-      puts "Cohort?".center(50)
-      @cohort = STDIN.gets.chop.capitalize.to_sym
-      if @cohort.empty? ; @cohort = "Cohort tbc" end
-      student_list_array
-      puts "Now we have #{@students.count} students".center(50)
-      puts "Hit return or add another name:".center(50)
-      @name = STDIN.gets.chop.capitalize.to_sym
-    end
+    puts "Cohort?".center(50)
+    @cohort = STDIN.gets.chop.capitalize.to_sym
+    if @cohort.empty? ; @cohort = "Cohort tbc" end
+    student_list_array
+    puts "Now we have #{@students.count} students".center(50)
+    puts "Hit return or add another name:".center(50)
+    @name = STDIN.gets.chop.capitalize.to_sym
+  end
 end
 def show_students
   print_header ; print_students_list ; print_footer
@@ -49,8 +51,8 @@ def print_students_list
 end
 def print_footer
   if @students.count == 0 ; return
-    elsif @students.count == 1 ; puts "We have a great student!".center(50)
-    else puts "We have #{@students.count} great students!".center(50)
+  elsif @students.count == 1 ; puts "We have a great student!".center(50)
+  else puts "We have #{@students.count} great students!".center(50)
   end
 end
 def print_by_cohort
@@ -69,7 +71,7 @@ def save_to_file
   CSV.open(filename, "w") do |csv|
     @students.each do |student|
       student_data = [student[:name], student[:cohort]]
-        csv << student_data
+      csv << student_data
       end
     end
   puts "Saved: #{filename}".center(50)
@@ -100,7 +102,7 @@ def load_default_at_startup
   filename = ARGV.first
   load_default if filename.nil?
 end
-def try_load_students
+def load_ARGV_or_default
   filename = ARGV.first
     return if filename.nil?
     if File.exists?(filename) ; load_default(filename)
@@ -108,5 +110,7 @@ def try_load_students
   end
 end
 
-try_load_students
+load_ARGV_or_default # may wish to disable load_default_at_startup on line 9 if using this method
 interactive_menu
+
+HEREDOC
